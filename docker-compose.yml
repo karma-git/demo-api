@@ -1,0 +1,13 @@
+version: "3.9"
+
+services:
+  python:
+    container_name: python-fastapi
+    image: quay.io/a_horbach/web-services-python-fastapi
+    build:
+      context: ./python/
+      dockerfile: Dockerfile
+    volumes:
+      - ./python:/home/app
+    ports:
+      - "8080:8080"
