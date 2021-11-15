@@ -11,3 +11,11 @@ services:
       - ./python:/home/app
     ports:
       - "8080:8080"
+  go:
+    container_name: go-http-daemon
+    image: quay.io/a_horbach/web-services-go-http-daemon
+    build:
+      context: ./go/
+      dockerfile: Dockerfile
+    ports:
+      - "8081:8081"
