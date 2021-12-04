@@ -1,0 +1,14 @@
+appConfig:
+  replicaCount: 1
+
+  image:
+    repository:  quay.io/jitesoft/nginx
+    tag: 1.20.2
+
+  port: 80
+
+  resources: {}
+
+  startupProbe: {}
+  livenessProbe: {}
+  readinessProbe: {}

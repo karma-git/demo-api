@@ -1,0 +1,17 @@
+apiVersion: v2
+name: fa
+description: A Helm chart for Kubernetes
+version: 0.1.0
+
+type: application
+
+keywords:
+  - web-app
+  - api
+
+sources: []
+maintainers:
+  - name: Andrew Horbach
+    email: andrewhorbach@gmail.com
+
+appVersion: "1.0"
