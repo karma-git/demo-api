@@ -21,8 +21,22 @@ services:
       - "8081:8081"
   js:
     container_name: nodejs-express
+    image: quay.io/a_horbach/web-services-js-express
     build:
       context: ./js/
       dockerfile: Dockerfile
     ports:
       - "8082:8082"
+  ruby:
+    container_name: ruby-sinatra
+    image: quay.io/a_horbach/web-services-ruby-sinatra
+    build:
+      context: ./ruby/
+      dockerfile: Dockerfile
+    # TODO: add rerun
+    # ref: http://sinatrarb.com/contrib/reloader
+    # ref: https://stackoverflow.com/questions/1247125/
+    volumes:
+      - ./ruby:/home/app
+    ports:
+      - "8083:8083"
