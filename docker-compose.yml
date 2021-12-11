@@ -19,3 +19,10 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8081:8081"
+  js:
+    container_name: nodejs-express
+    build:
+      context: ./js/
+      dockerfile: Dockerfile
+    ports:
+      - "8082:8082"

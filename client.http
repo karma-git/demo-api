@@ -4,3 +4,7 @@ Accept: application/json
 ###
 GET http://localhost:8081/
 Accept: application/json
+
+###
+GET http://localhost:8082/
+Accept: application/json
