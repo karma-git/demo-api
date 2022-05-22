@@ -18,7 +18,9 @@ services:
       context: ./go/
       dockerfile: Dockerfile
     ports:
-      - "8081:8081"
+      - "80:8081"
+    #environment:
+    #- PORT=80
   js:
     container_name: nodejs-express
     image: quay.io/a_horbach/web-services-js-express
