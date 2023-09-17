@@ -1,4 +1,4 @@
-FROM alpine:3.14
+FROM ruby:3.3-rc-alpine3.18
 
 RUN addgroup --gid 10001 app \
   && adduser \
@@ -13,18 +13,9 @@ COPY ./Gemfile /home/app
 
 WORKDIR /home/app
 
-RUN apk add --no-cache \
-    ruby~=2.7.5 \
-    ruby-json~=2.7.5 \
-    ruby-etc~=2.7.5 \
+RUN apk add --no-cache --virtual .build-deps \
+  build-base==0.5-r3 \
   && gem install bundle \
-  && apk add --no-cache --virtual .build-deps \
-    ruby-dev~=2.7.5 \
-    libffi-dev~=3.3 \
-    gcc~=10.3.1 \
-    g++~=10.3.1 \
-    make~=4.3 \
-    automake~=1.16.3 \
   && bundle install --no-cache \
   && apk del .build-deps
 

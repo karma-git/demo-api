@@ -20,7 +20,7 @@ services:
     ports:
       - "80:8081"
     #environment:
-    #- PORT=80
+    # - PORT=80
   js:
     container_name: nodejs-express
     image: quay.io/a_horbach/web-services-js-express
@@ -29,6 +29,7 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8082:8082"
+
   ruby:
     container_name: ruby-sinatra
     image: quay.io/a_horbach/web-services-ruby-sinatra
@@ -42,3 +43,11 @@ services:
       - ./ruby:/home/app
     ports:
       - "8083:8083"
+
+  php-app:
+    image: php:8.2.10-fpm
+    ports:
+      - "8084:8084"
+    volumes:
+      - ./php:/var/www/html
+    entrypoint: ["php", "-S", "0.0.0.0:8084", "/var/www/html/index.php"]

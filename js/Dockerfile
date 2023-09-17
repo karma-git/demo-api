@@ -1,8 +1,8 @@
-FROM alpine:3.14
+FROM alpine:3.14.10
 
 RUN apk add --no-cache \
-    nodejs~=14.18 \
-    npm~=7.17
+    nodejs~=14.21.3 \
+    npm~=7.17.0
 
 RUN addgroup --gid 10001 app \
   && adduser \
