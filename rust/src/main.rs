@@ -1,26 +1,44 @@
-use actix_web::{get, post, web, App, HttpResponse, HttpServer, Responder};
-use std::collections::HashMap;
+use serde::Serialize;
+use warp::{reply::json, Filter, Rejection, Reply};
+use gethostname::gethostname;
+use uuid::Uuid;
 
-fn rust_response() -> HashMap{
-    let mut rust_response = HashMap::new();
-    rust_response.insert("language", vec!["rust"]);
-    return rust_response;
+
+type WebResult<T> = std::result::Result<T, Rejection>;
+
+
+#[derive(Serialize)]
+pub struct PayloadResponse {
+    language: String,
+    hostname: String,
+    timestamp: String,
+    uuid: String,
 }
 
-#[get("/")]
-async fn hello() -> impl Responder {
-    HttpResponse::Ok().body("Hello")
+pub async fn payload_handler() -> WebResult<impl Reply> {
+    let response_json = &PayloadResponse {
+        language: "rust".to_string(),
+        hostname: gethostname().to_string_lossy().to_string(),
+        timestamp: chrono::Utc::now().to_rfc3339(),
+        uuid : Uuid::new_v4().to_string(),
+    };
+    Ok(json(response_json))
 }
 
-#[actix_web::main]
-async fn main() -> std::io::Result<()> {
-    HttpServer::new(|| {
-        App::new()
-            .service(hello)
-    })
-    .bind("127.0.0.1:8080")?
-    .run()
-    .await
-}
+#[tokio::main]
+async fn main() {
+    if std::env::var_os("RUST_LOG").is_none() {
+        std::env::set_var("RUST_LOG", "api=info");
+    }
+    pretty_env_logger::init();
 
-// gethostname()
+    // let health_checker = warp::path!("api" / "healthchecker")
+    let payload = warp::path!("api" / "root")
+        .and(warp::get())
+        .and_then(payload_handler);
+
+    let routes = payload.with(warp::log("api"));
+
+    println!("🚀 Server started successfully");
+    warp::serve(routes).run(([0, 0, 0, 0], 8095)).await;
+}
