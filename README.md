@@ -10,3 +10,17 @@ Requirements for application instances:
 
 Requirements for Deployment:
 - Newly created services should be easily added to the list of existing ones."
+
+# demo
+
+[![asciicast](https://asciinema.org/a/SnYv2zz2hM01wEZ7gQDm1d0ON.svg)](https://asciinema.org/a/SnYv2zz2hM01wEZ7gQDm1d0ON)
+
+# test locally
+
+See [Taskfile](Taskfile.yml)
+
+To build containers locally use:
+```shell
+task dc-up
+# docker compose up
+```
