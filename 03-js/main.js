@@ -16,12 +16,16 @@ function portFromEnv() {
     if (process.env.PORT) {
         return process.env.PORT
     } else {
-        return 8082
+        return 8080
     }
 }
 
 app.get('/', (req, res) => {
   res.send(jsresponse)
+})
+
+app.get('/health', (req, res) => {
+  res.send({"status": "ok"})
 })
 
 app.listen(port, () => {

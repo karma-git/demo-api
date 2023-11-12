@@ -15,13 +15,13 @@ RUN addgroup --gid 10001 app \
 
 WORKDIR /home/app
 
-USER app
-
 COPY ./ /home/app
 
 RUN npm install
 
-EXPOSE 8082
+USER app
+
+EXPOSE 8080
 
 ENTRYPOINT ["/usr/bin/node"]
 CMD ["main.js"]

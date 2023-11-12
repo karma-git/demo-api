@@ -5,49 +5,68 @@ services:
     container_name: python-fastapi
     image: quay.io/a_horbach/web-services-python-fastapi
     build:
-      context: ./python/
+      context: ./01-python/
       dockerfile: Dockerfile
     volumes:
-      - ./python:/home/app
+      - ./01-python:/home/app
+    environment:
+      - PORT=8081
     ports:
-      - "8080:8080"
-  go:
-    container_name: go-http-daemon
-    image: quay.io/a_horbach/web-services-go-http-daemon
-    build:
-      context: ./go/
-      dockerfile: Dockerfile
-    ports:
-      - "80:8081"
-    #environment:
-    # - PORT=80
+      - "8081:8081"
+
+  # go:
+  #   container_name: go-fiber
+  #   image: quay.io/a_horbach/web-services-go-fiber
+  #   build:
+  #     context: ./02-go/
+  #     dockerfile: Dockerfile
+  #   environment:
+  #     - PORT=8082
+  #   ports:
+  #     - "8082:8082"
+
   js:
     container_name: nodejs-express
     image: quay.io/a_horbach/web-services-js-express
     build:
-      context: ./js/
+      context: ./03-js/
       dockerfile: Dockerfile
+    environment:
+      - PORT=8083
     ports:
-      - "8082:8082"
+      - "8083:8083"
 
   ruby:
     container_name: ruby-sinatra
     image: quay.io/a_horbach/web-services-ruby-sinatra
     build:
-      context: ./ruby/
+      context: ./04-ruby/
       dockerfile: Dockerfile
     # TODO: add rerun
     # ref: http://sinatrarb.com/contrib/reloader
     # ref: https://stackoverflow.com/questions/1247125/
     volumes:
-      - ./ruby:/home/app
-    ports:
-      - "8083:8083"
-
-  php-app:
-    image: php:8.2.10-fpm
+      - ./04-ruby:/home/app
+    environment:
+      - PORT=8084
     ports:
       - "8084:8084"
-    volumes:
-      - ./php:/var/www/html
-    entrypoint: ["php", "-S", "0.0.0.0:8084", "/var/www/html/index.php"]
+
+  rust-warp:
+    container_name: rust-warp
+    image: quay.io/a_horbach/web-services-rust-warp
+    build:
+      context: ./05-rust/
+      dockerfile: Dockerfile
+    environment:
+      - PORT=8085
+    ports:
+      - "8085:8085"
+
+  # php-app:
+  #   image: php:8.2.10-fpm
+  #   ports:
+  #     - "8084:8084"
+  #   volumes:
+  #     - ./php:/var/www/html
+  #   entrypoint: ["php", "-S", "0.0.0.0:8084", "/var/www/html/index.php"]

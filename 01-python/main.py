@@ -23,7 +23,6 @@ async def check_health() -> dict:
     """Smoke test ep"""
     return {"status": "OK"}
 
-
 if __name__ == "__main__":
     port = int(environ.get("PORT", 8080))
-    uvicorn.run("main:app", host="0.0.0.0", port=port, log_level="info")
+    uvicorn.run("main:app", reload=True, host="0.0.0.0", port=port, log_level="info")

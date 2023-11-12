@@ -23,10 +23,9 @@ pub struct PayloadResponse {
 }
 
 #[derive(Serialize)]
-struct Health {
+struct HealthResponse {
     status: String,
 }
-
 
 pub async fn payload_handler() -> WebResult<impl Reply> {
     let response_json = &PayloadResponse {
@@ -39,7 +38,7 @@ pub async fn payload_handler() -> WebResult<impl Reply> {
 }
 
 pub async fn health_handler() -> WebResult<impl Reply> {
-    let response_json = &Health {
+    let response_json = &HealthResponse {
         status: "ok".to_string(),
     };
     Ok(json(response_json))
@@ -51,9 +50,9 @@ async fn main() {
     env::set_var("RUST_LOG", "api=info");
     pretty_env_logger::init();
 
-    let port = get_env_as_int("PORT", 8095);
+    let port = get_env_as_int("PORT", 8080);
 
-    let payload = warp::path!("api")
+    let payload = warp::path::end()
         .and(warp::get())
         .and_then(payload_handler);
 

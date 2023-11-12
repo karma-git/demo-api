@@ -140,3 +140,4 @@ cython_debug/
 
 # ---
 **/*.secret.yml
+node_modules

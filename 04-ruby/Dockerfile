@@ -9,7 +9,7 @@ RUN addgroup --gid 10001 app \
     --disabled-password \
     app
 
-COPY ./Gemfile /home/app
+COPY Gemfile Gemfile.lock main.rb /home/app
 
 WORKDIR /home/app
 
@@ -19,11 +19,9 @@ RUN apk add --no-cache --virtual .build-deps \
   && bundle install --no-cache \
   && apk del .build-deps
 
-COPY ./ /home/app/
-
 USER app
 
-EXPOSE 8083
+EXPOSE 8080
 
-ENTRYPOINT ["/usr/bin/ruby"]
+ENTRYPOINT ["/usr/local/bin/ruby"]
 CMD ["main.rb"]
