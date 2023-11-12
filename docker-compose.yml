@@ -3,51 +3,84 @@ version: "3.9"
 services:
   python:
     container_name: python-fastapi
-    image: quay.io/a_horbach/web-services-python-fastapi
+    image: docker.io/karmawow/demo-api:python-latest
+    platform: linux/amd64
     build:
-      context: ./python/
+      context: ./01-python/
       dockerfile: Dockerfile
     volumes:
-      - ./python:/home/app
+      - ./01-python:/home/app
+    environment:
+      - PORT=8081
     ports:
-      - "8080:8080"
+      - "8081:8081"
+
   go:
-    container_name: go-http-daemon
-    image: quay.io/a_horbach/web-services-go-http-daemon
+    container_name: go-fiber
+    image: docker.io/karmawow/demo-api:go-latest
+    platform: linux/amd64
     build:
-      context: ./go/
+      context: ./02-go/
       dockerfile: Dockerfile
-    ports:
-      - "80:8081"
-    #environment:
-    # - PORT=80
-  js:
-    container_name: nodejs-express
-    image: quay.io/a_horbach/web-services-js-express
-    build:
-      context: ./js/
-      dockerfile: Dockerfile
+    environment:
+      - PORT=8082
     ports:
       - "8082:8082"
 
+  js:
+    container_name: nodejs-express
+    image: docker.io/karmawow/demo-api:js-latest
+    platform: linux/amd64
+    build:
+      context: ./03-js/
+      dockerfile: Dockerfile
+    environment:
+      - PORT=8083
+    ports:
+      - "8083:8083"
+
   ruby:
     container_name: ruby-sinatra
-    image: quay.io/a_horbach/web-services-ruby-sinatra
+    image: docker.io/karmawow/demo-api:ruby-latest
+    platform: linux/amd64
     build:
-      context: ./ruby/
+      context: ./04-ruby/
       dockerfile: Dockerfile
     # TODO: add rerun
     # ref: http://sinatrarb.com/contrib/reloader
     # ref: https://stackoverflow.com/questions/1247125/
     volumes:
-      - ./ruby:/home/app
-    ports:
-      - "8083:8083"
-
-  php-app:
-    image: php:8.2.10-fpm
+      - ./04-ruby:/home/app
+    environment:
+      - PORT=8084
     ports:
       - "8084:8084"
-    volumes:
-      - ./php:/var/www/html
-    entrypoint: ["php", "-S", "0.0.0.0:8084", "/var/www/html/index.php"]
+
+  rust:
+    container_name: rust-warp
+    image: docker.io/karmawow/demo-api:rust-latest
+    platform: linux/amd64
+    build:
+      context: ./05-rust/
+      dockerfile: Dockerfile
+    environment:
+      - PORT=8085
+    ports:
+      - "8085:8085"
+
+  php:
+    container_name: php-slim
+    image: docker.io/karmawow/demo-api:php-latest
+    platform: linux/amd64
+    build:
+      context: ./06-php/
+      dockerfile: Dockerfile
+    # WARNING: port selection is not working, port specified in CMD / ARGS
+    environment:
+      - PORT=8086
+    ports:
+      - "8086:8086"
+
+networks:
+  default:
+    name: demo-api

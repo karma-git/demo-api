@@ -1,0 +1,93 @@
+{{/* "test-connection" is a job that sends a GET request to every exposed port by the service. */}}
+{{- $name := printf "%s-test-connection" (include "demo-api.fullname" . ) -}}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ $name }}
+data:
+  check.sh: |-
+    #!/bin/bash
+
+    # set -eux
+
+    for target in $(kubectl get svc {{ include "demo-api.fullname" . }} -o json \
+      | jq -r '.spec.ports[].port'
+      ); do
+
+      curl -sX GET {{ include "demo-api.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:$target | jq
+    done
+
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: "{{ $name }}-{{ randAlphaNum 10 | lower }}"
+  labels:
+  {{- include "demo-api.labels" . | nindent 4 }}
+spec:
+  template:
+    metadata:
+      labels:
+      {{- include "demo-api.labels" . | nindent 8 }}
+        app: test-connection
+      annotations:
+        "helm.sh/hook": post-install
+    spec:
+      volumes:
+        - name: script
+          configMap:
+            name:  {{ $name }}
+            defaultMode: 0550
+
+      serviceAccountName: {{ $name }}
+      containers:
+      - name: {{ $name }}
+        image: docker.io/karmawow/monorepo-devops-tools:3.0
+        volumeMounts:
+          - name: script
+            mountPath: /tmp
+        command:
+          - sh
+          - -c
+          - /tmp/check.sh
+
+      restartPolicy: Never
+  backoffLimit: 2
+  # The job will run on the next upgrade and replace the old one in the Kubernetes API
+  # ttlSecondsAfterFinished:
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{ $name }}
+  labels:
+  {{- include "demo-api.labels" . | nindent 4 }}
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: {{ $name }}
+  labels:
+  {{- include "demo-api.labels" . | nindent 4 }}
+rules:
+  - apiGroups: [""]
+    resources: ["services"]
+    verbs: ["get"]
+    resourceNames: ["{{ include "demo-api.fullname" . }}"]
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: {{ $name }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ $name }}
+    namespace: {{ .Release.Namespace }}
+roleRef:
+  kind: Role
+  name: {{ $name }}
+  apiGroup: rbac.authorization.k8s.io

@@ -1,0 +1,33 @@
+---
+
+version: "3"
+
+env:
+  HELM_PATH: .helm/demo-api
+
+tasks:
+  # docker-compose tasks
+  dc-up: docker compose up
+  dc-build: docker compose --build
+  dc-push: docker compose push
+  dc-clean: docker compose down
+  dc-http: |
+    targets=$(docker container ls --format json \
+      | jq -r 'select(.Networks == "demo-api") | .Ports' \
+      | grep -oE '[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+:[0-9]+'
+      )
+
+    for target in "${targets[@]}"; do
+      curl -sX GET $target | jq
+    done
+  # helm tasks
+  helm-install: |
+    helm upgrade --install demo-api $HELM_PATH \
+      --create-namespace \
+      --namespace demo \
+      --wait --timeout 5m \
+      --atomic \
+      --values $HELM_PATH/values.yaml
+  helm-uninstall: |
+    helm uninstall demo-api \
+      --namespace demo
