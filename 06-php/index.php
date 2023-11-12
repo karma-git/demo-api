@@ -17,10 +17,12 @@ $app->addErrorMiddleware(true, true, true);
 // Add routes
 
 $app->get('/', function (Request $request, Response $response) {
+  $dateTime = new DateTime();
+
   $data = [
     "language" => "🐘 php",
     "hostname" => gethostname(),
-    "timestamp" => time(),
+    "timestamp" => $dateTime->format('Y-m-d\TH:i:s.u'),
     "uuid" => uniqid(),
   ];
   $payload = json_encode($data);

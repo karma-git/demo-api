@@ -3,7 +3,8 @@ version: "3.9"
 services:
   python:
     container_name: python-fastapi
-    image: quay.io/a_horbach/web-services-python-fastapi
+    image: docker.io/karmawow/demo-api:python-latest
+    platform: linux/amd64
     build:
       context: ./01-python/
       dockerfile: Dockerfile
@@ -16,7 +17,8 @@ services:
 
   go:
     container_name: go-fiber
-    image: quay.io/a_horbach/web-services-go-fiber
+    image: docker.io/karmawow/demo-api:go-latest
+    platform: linux/amd64
     build:
       context: ./02-go/
       dockerfile: Dockerfile
@@ -27,7 +29,8 @@ services:
 
   js:
     container_name: nodejs-express
-    image: quay.io/a_horbach/web-services-js-express
+    image: docker.io/karmawow/demo-api:js-latest
+    platform: linux/amd64
     build:
       context: ./03-js/
       dockerfile: Dockerfile
@@ -38,7 +41,8 @@ services:
 
   ruby:
     container_name: ruby-sinatra
-    image: quay.io/a_horbach/web-services-ruby-sinatra
+    image: docker.io/karmawow/demo-api:ruby-latest
+    platform: linux/amd64
     build:
       context: ./04-ruby/
       dockerfile: Dockerfile
@@ -54,7 +58,8 @@ services:
 
   rust:
     container_name: rust-warp
-    image: quay.io/a_horbach/web-services-rust-warp
+    image: docker.io/karmawow/demo-api:rust-latest
+    platform: linux/amd64
     build:
       context: ./05-rust/
       dockerfile: Dockerfile
@@ -65,7 +70,8 @@ services:
 
   php:
     container_name: php-slim
-    image: quay.io/a_horbach/web-services-php-slim
+    image: docker.io/karmawow/demo-api:php-latest
+    platform: linux/amd64
     build:
       context: ./06-php/
       dockerfile: Dockerfile
@@ -74,3 +80,7 @@ services:
       - PORT=8086
     ports:
       - "8086:8086"
+
+networks:
+  default:
+    name: demo-api

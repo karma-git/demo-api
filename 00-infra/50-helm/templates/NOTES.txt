@@ -1,0 +1,5 @@
+Demo-API has been deployed, to check the result of client http request, please run:
+
+pod=$(kubectl --namespace {{ .Release.Namespace }} get pods --selector=helm=test-connection -o \
+  jsonpath='{.items[*].metadata.name}')
+kubectl --namespace {{ .Release.Namespace }} logs $pod -f

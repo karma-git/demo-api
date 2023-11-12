@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "demo-api.fullname" . }}
+  labels:
+    {{- include "demo-api.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    {{- range $app, $values := $.Values.apps }}
+    {{- $instance := mergeOverwrite (dict) (deepCopy $.Values.appDefault) (deepCopy $values) }}
+    - name: "{{ $app }}-http"
+      port: {{ $instance.port }}
+      targetPort: "{{ $app }}-http"
+      protocol: TCP
+    {{- end }}
+  selector:
+    {{- include "demo-api.selectorLabels" . | nindent 4 }}

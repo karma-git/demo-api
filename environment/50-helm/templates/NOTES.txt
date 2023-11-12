@@ -1,7 +1,0 @@
-1. Get access to application from your machine:
-{{- if .Values.namespace }}
-kubectl -n {{ .Values.namespace }} port-forward svc/{{ include "helm-fa.name" . }} {{ .Values.appConfig.port }}:{{ .Values.appConfig.port }}
-{{ else }}
-kubectl port-forward svc/{{ include "helm-fa.name" . }} {{ .Values.appConfig.port }}:{{ .Values.appConfig.port }}
-{{ end }}
-Thank you.

@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "demo-api.fullname" . }}
+  labels:
+    {{- include "demo-api.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "demo-api.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "demo-api.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "demo-api.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+
+      # Merging instance values with defaults
+      containers:
+      {{- range $app, $values := $.Values.apps }}
+      {{- $instance := mergeOverwrite (dict) (deepCopy $.Values.appDefault) (deepCopy $values) }}
+        - name: {{ $app }}
+          securityContext:
+            {{- toYaml $instance.securityContext | nindent 12 }}
+          {{- include "instance.computeImage" (dict "app" $app "instance" $instance "context" $) | nindent 10 }}
+          imagePullPolicy: {{ $instance.imagePullPolicy }}
+          env:
+            {{- include "instance.computeEnvs" (dict "instance" $instance "context" $) | nindent 12 }}
+          ports:
+            - name: "{{ $app }}-http"
+              containerPort: {{ $instance.port }}
+              protocol: TCP
+          livenessProbe:
+            {{- include "instance.computeProbe" (dict "app" $app "instance" $instance) | nindent 12 }}
+          readinessProbe:
+            {{- include "instance.computeProbe" (dict "app" $app "instance" $instance) | nindent 12 }}
+          resources:
+            {{- toYaml $instance.resources | nindent 12 }}
+      {{- end }}
+
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
