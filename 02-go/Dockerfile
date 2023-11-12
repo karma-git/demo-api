@@ -4,7 +4,7 @@ ARG CGO_ENABLED=0
 ARG GOOS=linux
 ARG GOARCH=amd64
 
-COPY . /go
+COPY ./ /go
 
 RUN set -eux \
     && unset GOPATH \

@@ -9,7 +9,7 @@ RUN addgroup --gid 10001 app \
     --disabled-password \
     app
 
-COPY requirements.txt main.py /home/app
+COPY ./ /home/app
 
 WORKDIR /home/app
 

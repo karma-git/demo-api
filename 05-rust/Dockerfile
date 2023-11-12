@@ -1,10 +1,10 @@
 FROM rust:alpine3.18 AS build
 
-COPY . /tmp
+COPY ./ /tmp
 
 WORKDIR /tmp
 
-RUN apk add build-base
+RUN apk add --no-cache build-base~=0.5
 
 RUN cargo build
 
