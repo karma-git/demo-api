@@ -6,7 +6,7 @@ var os = require("os");
 var uuid = require('uuid');
 
 var jsresponse = {
-    "language": "javascript",
+    "language": "🧶 javascript",
     "hostname": os.hostname(),
     "timestamp": new Date(),
     "uuid": uuid.v4()
@@ -29,5 +29,5 @@ app.get('/health', (req, res) => {
 })
 
 app.listen(port, () => {
-  console.log(`js app listening at 0.0.0.0:${port}`)
+  console.log(`🧶 js app listening at 0.0.0.0:${port}`)
 })

@@ -1,0 +1,4 @@
+__pycache__  # python
+target       # rust
+node_modules # js
+vendor       # php

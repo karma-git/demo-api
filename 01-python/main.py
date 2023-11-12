@@ -15,7 +15,7 @@ app = FastAPI()
 @app.get("/")
 async def main_payload() -> dict:
     """Check container"""
-    return {"language": "python","hostname": gethostname(), "timestamp": datetime.now(), "uuid": uuid4()}
+    return {"language": "🐍 python","hostname": gethostname(), "timestamp": datetime.now(), "uuid": uuid4()}
 
 
 @app.get("/health", status_code=status.HTTP_200_OK)

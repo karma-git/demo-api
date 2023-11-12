@@ -29,7 +29,7 @@ func payloadHandler(c *fiber.Ctx) error {
 	uuid, _ := uuid.NewRandom()
 
 	response := PayloadResponse{
-		Language:  "go",
+		Language:  "🐹 go",
 		Hostname:  hostname,
 		Timestamp: time.Now(),
 		Uuid:      fmt.Sprintf("%s", uuid),
@@ -67,6 +67,6 @@ func main() {
 	app.Get("/", payloadHandler)
 	app.Get("/health", healthHandler)
 
-	fmt.Printf("🚀 Server started successfully on port %d\n", port)
+	fmt.Printf("🐹 Server started successfully on port %d\n", port)
 	log.Fatal(app.Listen(fmt.Sprintf(":%d", port)))
 }

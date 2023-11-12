@@ -5,7 +5,7 @@ require 'sinatra'
 require 'json'
 
 ruby_response = {
-    "language" => "ruby",
+    "language" => "💎 ruby",
     "hostname" => Socket.gethostname,
     "timestamp" => DateTime.now(),
     "uuid" => SecureRandom.uuid,

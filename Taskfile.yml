@@ -1,0 +1,26 @@
+---
+
+version: "3"
+
+tasks:
+  up:
+    cmds:
+      - docker compose up
+
+  http:
+    desc: Send a http request to all example-web-services
+    cmds:
+      - |
+        targets=$(docker container ls --format json \
+          | jq -r 'select(.Networks == "example-web-services_default") | .Ports' \
+          | grep -oE '[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+:[0-9]+'
+          )
+
+        for target in "${targets[@]}"; do
+          echo $target;
+          curl -sX GET $target | jq
+        done
+
+  cleanup:
+    cmds:
+      - docker compose down

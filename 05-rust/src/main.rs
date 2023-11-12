@@ -29,7 +29,7 @@ struct HealthResponse {
 
 pub async fn payload_handler() -> WebResult<impl Reply> {
     let response_json = &PayloadResponse {
-        language: "rust".to_string(),
+        language: "🦀 rust".to_string(),
         hostname: gethostname().to_string_lossy().to_string(),
         timestamp: chrono::Utc::now().to_rfc3339(),
         uuid : Uuid::new_v4().to_string(),
@@ -62,6 +62,6 @@ async fn main() {
 
     let routes =  warp::get().and(payload.or(health)).with(warp::log("api"));
 
-    println!("🚀 Server started successfully");
+    println!("🦀 Server started successfully");
     warp::serve(routes).run(([0, 0, 0, 0], port)).await;
 }

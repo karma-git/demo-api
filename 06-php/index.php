@@ -1,32 +1,42 @@
 <?php
+use Psr\Http\Message\ResponseInterface as Response;
+use Psr\Http\Message\ServerRequestInterface as Request;
+use Slim\Factory\AppFactory;
 
-$routes = [
-	'/' => 'mainPayload',
-    '/health' => 'healthCheck',
-];
+const PORT = 8080;
 
-function mainPayload() {
-    $data = [
-        "language" => "php",
-        "hostname" => gethostname(),
-        "timestamp" => time(),
-        "uuid" => uniqid(),
-    ];
-    echo json_encode($data);
-}
+require __DIR__ . '/vendor/autoload.php';
 
-function healthCheck() {
-	echo json_encode(['status' => 'OK']);
-}
+// Instantiate App
+$app = AppFactory::create();
+$port = getenv('PORT') ?: PORT;
 
-$request_uri = $_SERVER['REQUEST_URI'];
-$request_uri = strtok($request_uri, '?');
+// Add error middleware
+$app->addErrorMiddleware(true, true, true);
 
-if (array_key_exists($request_uri, $routes)) {
-	header('Content-Type: application/json; charset=utf-8');
-    $routeFunction = $routes[$request_uri];
-    $routeFunction();
-} else {
-    http_response_code(404);
-    echo "404 - Page not found";
-}
+// Add routes
+
+$app->get('/', function (Request $request, Response $response) {
+  $data = [
+    "language" => "🐘 php",
+    "hostname" => gethostname(),
+    "timestamp" => time(),
+    "uuid" => uniqid(),
+  ];
+  $payload = json_encode($data);
+  $response->getBody()->write($payload);
+  return $response
+            ->withHeader('Content-Type', 'application/json');
+});
+
+$app->get('/health', function (Request $request, Response $response) {
+  $data = [
+    "status" => "ok",
+  ];
+  $payload = json_encode($data);
+  $response->getBody()->write($payload);
+  return $response
+            ->withHeader('Content-Type', 'application/json');
+});
+
+$app->run();
