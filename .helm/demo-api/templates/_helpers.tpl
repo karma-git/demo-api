@@ -63,9 +63,8 @@ Create the name of the service account to use
 
 
 {{/*
-Динамически compute-ит latest image для сервиса по конвенции, если не указан кастом
-Usage:
-{{- include "common.resources" (dict "app" $app "instance" $instance) | nindent 6 | trim }}
+Dynamically computes the latest image for the service according to the convention if a custom one is not specified
+Example: {{- include "instance.computeImage" (dict "app" $app "instance" $instance) | nindent 10 }}
 */}}
 {{- define "instance.computeImage" -}}
 {{- if (hasKey .instance.image "tag") }}
@@ -76,8 +75,8 @@ image: "{{ .instance.image.repository }}:{{ .app }}-latest"
 {{- end }}
 
 {{/*
-Динамически compute-ит port для сервиса по конвенции, если не указан кастом
-{{- include "instance.computePort" (dict "instance" $instance "index" $index) }}
+Dynamically computes the port number for the service according to the convention if a custom one is not specified
+Example: {{- include "instance.computeContainerPort" (dict "instance" $instance) }}
 */}}
 {{- define "instance.computeContainerPort" -}}
 {{- if (hasKey .instance "port") }}
@@ -88,8 +87,8 @@ containerPort: {{ toString .index | quote }}
 {{- end }}
 
 {{/*
-Динамически compute-ит env
-{{- include "instance.computePort" (dict "instance" $instance "index" $index) }}
+Incorporate the service port number into environment variables, and merge them with user-specified environment variables
+Example: {{- include "instance.computeEnvs" (dict "instance" $instance) }}
 */}}
 {{- define "instance.computeEnvs" -}}
 - name: PORT
@@ -101,8 +100,8 @@ containerPort: {{ toString .index | quote }}
 {{- end }}
 
 {{/*
-Динамически compute-ит Probe
-{{- include "instance.computeProbe" (dict "app" $app "instance" "instance" $instance "context" $) | nindent 12 }}
+Dynamically computes the Probes the service
+Example: {{- include "instance.computeProbe" (dict "instance" $instance) | nindent 12 }}
 */}}
 {{- define "instance.computeProbe" -}}
 httpGet:

@@ -28,17 +28,17 @@ spec:
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
 
-      # Merging instance values with defaults
+      # Merging app instance values with defaults
       containers:
       {{- range $app, $values := $.Values.apps }}
       {{- $instance := mergeOverwrite (dict) (deepCopy $.Values.appDefault) (deepCopy $values) }}
         - name: {{ $app }}
           securityContext:
             {{- toYaml $instance.securityContext | nindent 12 }}
-          {{- include "instance.computeImage" (dict "app" $app "instance" $instance "context" $) | nindent 10 }}
+          {{- include "instance.computeImage" (dict "app" $app "instance" $instance) | nindent 10 }}
           imagePullPolicy: {{ $instance.imagePullPolicy }}
           env:
-            {{- include "instance.computeEnvs" (dict "instance" $instance "context" $) | nindent 12 }}
+            {{- include "instance.computeEnvs" (dict "instance" $instance) | nindent 12 }}
           ports:
             - name: "{{ $app }}-http"
               containerPort: {{ $instance.port }}

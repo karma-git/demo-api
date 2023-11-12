@@ -1,9 +1,10 @@
+{{/* "test-connection" is a job that sends a GET request to every exposed port by the service. */}}
+{{- $name := printf "%s-test-connection" (include "demo-api.fullname" . ) -}}
 ---
-
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: "{{ include "demo-api.fullname" . }}-test-connection"
+  name: {{ $name }}
 data:
   check.sh: |-
     #!/bin/bash
@@ -21,7 +22,7 @@ data:
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: "{{ include "demo-api.fullname" . }}-test-connection-{{ randAlphaNum 10 | lower }}"
+  name: "{{ $name }}-{{ randAlphaNum 10 | lower }}"
   labels:
   {{- include "demo-api.labels" . | nindent 4 }}
 spec:
@@ -29,19 +30,19 @@ spec:
     metadata:
       labels:
       {{- include "demo-api.labels" . | nindent 8 }}
-        helm: test-connection
+        app: test-connection
       annotations:
         "helm.sh/hook": post-install
     spec:
       volumes:
         - name: script
           configMap:
-            name:  "{{ include "demo-api.fullname" . }}-test-connection"
+            name:  {{ $name }}
             defaultMode: 0550
 
-      serviceAccountName: "{{ include "demo-api.fullname" . }}-test-connection"
+      serviceAccountName: {{ $name }}
       containers:
-      - name: "{{ include "demo-api.fullname" . }}-test-connection"
+      - name: {{ $name }}
         image: docker.io/karmawow/monorepo-devops-tools:3.0
         volumeMounts:
           - name: script
@@ -53,24 +54,22 @@ spec:
 
       restartPolicy: Never
   backoffLimit: 2
-  # ttlSecondsAfterFinished: never
-
----
+  # The job will run on the next upgrade and replace the old one in the Kubernetes API
+  # ttlSecondsAfterFinished:
 
 ---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: "{{ include "demo-api.fullname" . }}-test-connection"
+  name: {{ $name }}
   labels:
   {{- include "demo-api.labels" . | nindent 4 }}
 
 ---
-
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
-  name: "{{ include "demo-api.fullname" . }}-test-connection"
+  name: {{ $name }}
   labels:
   {{- include "demo-api.labels" . | nindent 4 }}
 rules:
@@ -80,16 +79,15 @@ rules:
     resourceNames: ["{{ include "demo-api.fullname" . }}"]
 
 ---
-
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  name: platform-api
+  name: {{ $name }}
 subjects:
   - kind: ServiceAccount
-    name: "{{ include "demo-api.fullname" . }}-test-connection"
+    name: {{ $name }}
     namespace: {{ .Release.Namespace }}
 roleRef:
   kind: Role
-  name: "{{ include "demo-api.fullname" . }}-test-connection"
+  name: {{ $name }}
   apiGroup: rbac.authorization.k8s.io
