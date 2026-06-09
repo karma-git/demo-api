@@ -1,8 +1,6 @@
-FROM alpine:3.14.10
+FROM node:22-alpine3.20
 
-RUN apk add --no-cache \
-    nodejs~=14.21.3 \
-    npm~=7.17.0
+RUN npm install -g pnpm
 
 RUN addgroup --gid 10001 app \
   && adduser \
@@ -17,11 +15,11 @@ WORKDIR /home/app
 
 COPY ./ /home/app
 
-RUN npm install
+RUN pnpm install
 
 USER app
 
 EXPOSE 8080
 
-ENTRYPOINT ["/usr/bin/node"]
+ENTRYPOINT ["node"]
 CMD ["main.js"]

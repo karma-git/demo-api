@@ -8,8 +8,6 @@ services:
     build:
       context: ./01-python/
       dockerfile: Dockerfile
-    volumes:
-      - ./01-python:/home/app
     environment:
       - PORT=8081
     ports:

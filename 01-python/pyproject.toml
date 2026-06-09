@@ -1,0 +1,11 @@
+[project]
+name = "demo-api-python"
+version = "0.1.0"
+description = "Simple HTTP service"
+requires-python = ">=3.10"
+dependencies = [
+    "aiofiles==23.2.1",
+    "fastapi==0.104.1",
+    "jinja2==3.1.2",
+    "uvicorn==0.24.0",
+]
